@@ -1,0 +1,6 @@
+(coq.theory
+ (name GuideDAOCoq)
+ (package guidedao-coq) 
+)
+
+(include_subdirs qualified)
