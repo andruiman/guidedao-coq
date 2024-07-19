@@ -142,10 +142,16 @@ Proof.
     intros.
     split.
     - intros. generalize dependent b. induction a; intros.
-    + symmetry. apply eqb_0. apply H.
-    + destruct b. 
-    * simpl in H. discriminate.
-    * simpl in H. rewrite IHa with (b:=b). reflexivity.
-    apply H.
-    - 
-Admitted.
+      + symmetry. apply eqb_0. apply H.
+      + destruct b. 
+        * simpl in H. discriminate.
+        * simpl in H. rewrite IHa with (b:=b). 
+          ** reflexivity.
+          ** (* apply H. *) assumption.
+    - intros. generalize dependent b. induction a; intros.
+      + rewrite <- H. simpl. reflexivity.
+      + destruct b.
+        * discriminate.
+        * simpl. apply IHa.
+    inversion H. reflexivity.
+Qed.
