@@ -303,14 +303,15 @@ State (fun s =>
 Lemma state_bind_unit : forall S X Y (x : X) (f : X -> state S Y),
       state_bind (state_unit x) f = f x.
 Proof. 
-  intros. unfold state_bind. unfold state_unit. simpl. unfold run.
+  intros. unfold state_bind. unfold state_unit. 
+  simpl. unfold run.
   destruct (f x). auto.
 Qed.
 
 Lemma state_unit_bind : forall S X (m : state S X), state_bind m state_unit = m.
 Proof.
  intros. unfold state_bind. destruct m. apply state_eq. extensionality y.
- unfold run. unfold state_unit. simpl. destruct (p y). auto.
+ unfold run. unfold state_unit. destruct (p y). auto.
 Qed.
 
 Lemma state_bind_assoc : 
@@ -347,12 +348,12 @@ Instance state_Monad S: Monad (state S):=
 }.
 
 
-Check State (fun s => (0, s + 1)).
+Check State (fun (s: nat) => (0, s + 1)).
 
 Definition mod_state1 : state nat nat := State (fun s => (0, s + 1)).
 
-Compute eval_state mod_state1 0.
-Compute exec_state mod_state1 0.
+Compute eval_state mod_state1 1.
+Compute exec_state mod_state1 1.
 
 Definition mod_state2 : state nat nat := State (fun s => (1, s - 1)).
 
@@ -375,7 +376,7 @@ Class Monad_State (S: Type) :=
 }.
 
 Definition modify {S: Type} (f: S -> S)`{Monad_State S}: state S S := 
-  get >>= (compose put f).
+  get >>= (* (compose put f) *)(fun t => put (f t)).
 
 Definition gets {S T: Type} (f: S -> T)`{Monad_State S}: state S T :=
   get >>= (compose state_unit f).
