@@ -8,7 +8,7 @@ SetUrsusOptions.
 Set Dune Build Root "_build/default".
 Elpi SetProjectRoot .
 
-Set Coq Root "src".
+Set Coq Root "src/ERC20/src".
 Set Project Source Path "ERC20". 
 Set Functions Path "Functions".
 Set Execs Path "Execs".
@@ -20,9 +20,9 @@ Set Log Path "res.log".
 Import ListNotations.
 Local Open Scope list_scope.
 
-Definition roots_eval : Datatypes.list string := [ "constructor" ; "transfer" ; "approve" ; "transferFrom" ; "mint" ; "burn" ].
-Definition roots_exec : Datatypes.list string := [ "constructor" ; "transfer" ; "approve" ; "transferFrom" ; "mint" ; "burn" ] .
+Definition roots_eval : Datatypes.list string := [ "transfer'" ].
+Definition roots_exec : Datatypes.list string := [ "transfer'" ] .
 
-Elpi GenerateFunction ERC20 "Run" "Functions" .
+Elpi GenerateFunction ERC20 "Run1" "Functions1" .
 
 End Run.

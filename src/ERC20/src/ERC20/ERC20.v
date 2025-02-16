@@ -4,6 +4,8 @@ Require Import UrsusQC.CommonQCEnvironment.
 Require Import UrsusContractCreator.UrsusFieldUtils.
 Require Import UrsusContractCreator.BaseContracts.EverContract.
 
+Set UrsusPrefixTactic "PrefixOnlyURValue".
+
 Interfaces.
 SetUrsusOptions.
 
@@ -18,13 +20,9 @@ MakeInterface Class IERC20 :=
 }.
 EndInterfaces.
 
-Set UrsusPrefixTactic "PrefixTestOptimized".
-
-(* Module ERC20. *) 
 #[translation = off]
 #[quickchick = off]
 #[language = solidity]
-#[Contract = ERC20Contract]
 Contract ERC20 ;
 Sends To  ; 
 Inherits EverBaseContract ;
@@ -44,7 +42,7 @@ Record Contract := {
     symbol: string;
     decimals: uint8;
 
-    (* rrr: _ResolveRecord("SomeRecord") *)
+    rrr: _ResolveRecord("SomeRecord")
 }.
 
 SetUrsusOptions.
@@ -60,7 +58,6 @@ UseLocal Definition _ := [
 Local Open Scope nat_scope.
 Local Open Scope Q_scope.
 Local Open Scope N_scope.
-
 
 #[nonpayable, public]
 Ursus Definition constructor (name_ : string) (symbol_ : string) (decimals_ : uint8): UExpression PhantomType false.
@@ -78,19 +75,7 @@ Print constructor.
 #[nonpayable, external, returns=result_]
 Ursus Definition transfer (recipient : address) (amount : uint256): UExpression (bool) false.
 {
-    :://  balanceOf[[msg->sender]] -= amount.
-    :://  balanceOf[[recipient]] += amount.
-    :://  result_ := {true} |.
-}
-return.
-Defined.
-Sync.
-
-#[nonpayable, external, returns=result_]
-Ursus Definition transfer' (recipient : address) (amount : uint256): UExpression (bool) true.
-{
-    ::// require (balanceOf[[msg->sender]] >= amount, {0}).
-    ::// balanceOf[[msg->sender]] -= amount.
+    ::// balanceOf[[msg->sender]] := balanceOf[[msg->sender]] - amount.
     ::// balanceOf[[recipient]] += amount.
     ::// result_ := {true} |.
 }
@@ -98,6 +83,21 @@ return.
 Defined.
 Sync.
 
+Print transfer.
+
+#[nonpayable, external, returns=result_]
+Ursus Definition transfer' (recipient : address) (amount : uint256): UExpression (bool) true.
+{
+    ::// require (balanceOf[[msg->sender]] >= amount, {0}).
+    ::// balanceOf[[msg->sender]] := balanceOf[[msg->sender]] - amount.
+    ::// balanceOf[[recipient]] += amount.
+    ::// result_ := {true} |.
+}
+return.
+Defined.
+Sync.
+
+Print transfer'.
 
 #[nonpayable, external, returns=result_]
 Ursus Definition approve (spender : address) (amount : uint256): UExpression (bool) false.
@@ -109,6 +109,7 @@ return.
 Defined.
 Sync.
 
+Print approve.
 
 #[nonpayable, external, returns=result_]
 Ursus Definition transferFrom (sender : address) (recipient : address) (amount : uint256): UExpression (bool) false.
